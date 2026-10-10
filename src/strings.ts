@@ -1,0 +1,158 @@
+// 画面とレポートの文字(D-11: 英語が基本、Obsidian の表示言語が日本語なら日本語 FR-16)。useLanguage で S を切り替える。
+// 文字と、値を埋める小さな関数だけ。obsidian を import しない(テストで読む)。
+import type { CheckId } from "./model";
+
+const EN = {
+	checkName: {
+		"broken-link": "Broken links", orphan: "Orphan notes", "duplicate-name": "Duplicate names",
+		naming: "Naming rules", residue: "Leftover files", placement: "Placement rules",
+	} as Record<CheckId, string>,
+	cmdOpen: "Open vault health panel",
+	cmdRescan: "Rescan vault",
+	cmdCopy: "Copy vault health report",
+
+	panelTitle: "Vault health",
+	btnRescan: "Rescan",
+	btnCopy: "Copy report",
+	btnIgnore: "Ignore",
+	notScanned: "Not scanned yet.",
+	lastScan: (time: string, ms: number) => `Last scan: ${time} (${ms} ms)`,
+	meta: (scanned: number, excluded: number, ignored: number) => `Files scanned: ${scanned} / Excluded: ${excluded} / Ignored: ${ignored}`,
+	indexing: "Obsidian may still be indexing links. The panel rescans when indexing finishes.",
+	none: "None",
+	absoluteLinks: "Absolute path links (they break on other devices)",
+	subpathLinks: "Missing headings or blocks (warning)",
+	invalidRule: (rule: string, message: string) => `Invalid rule: ${rule} (${message})`,
+	failedChecks: "Failed checks",
+	lineNo: (n: number) => `line ${n}`,
+	property: (p: string) => `property ${p}`,
+	emptyNote: "0-byte note",
+	groups: (n: number) => `${n} groups`,
+	vaultRoot: "(vault root)",
+
+	noticeCopied: "Vault health report copied.",
+	noticeCopyFailed: (m: string) => `Could not copy the report: ${m}`,
+	noticeSchema: "Vault Doctor: data.json was written by another version. Running with defaults; data.json is not changed.",
+	noticeBroken: "Vault Doctor: could not read data.json. Running with defaults; data.json is not changed.",
+	noticeNotSaved: "Vault Doctor: settings are not saved because data.json could not be read.",
+	noticeMissing: (p: string) => `File not found: ${p}`,
+
+	reportTitle: "Vault health report",
+	reportCheck: "Check",
+	reportCount: "Count",
+	reportCols: {
+		"broken-link": ["Source", "Line", "Link"], orphan: ["Path"], "duplicate-name": ["Name", "Count", "Paths"],
+		naming: ["Path", "Rule"], residue: ["Path", "Reason"], placement: ["Path", "Rule"],
+	} as Record<CheckId, string[]>,
+
+	setExclude: "Excluded folders",
+	setExcludeDesc: "One folder per line, relative to the vault root. Applies to every check. Foo covers Foo/ but not FooBar/.",
+	setExempt: "Folders exempt from the orphan check",
+	setExemptDesc: "One folder per line. Notes in these folders are never listed as orphans.",
+	setDupAllowed: "Names allowed to repeat",
+	setDupAllowedDesc: "One pattern per line. * matches any characters and ? matches one. Example: ????-??-??.md",
+	setResidue: "Leftover file patterns",
+	setResidueDesc: "One pattern per line, matched against the file name without case. * and ? only.",
+	setEmptyNote: "List empty notes as leftovers",
+	setEmptyNoteDesc: "Markdown files of 0 bytes. Notes are never opened, so a note with only properties is not empty.",
+	setSubpaths: "Check headings and blocks",
+	setSubpathsDesc: "Warn when a link points to a heading or block that does not exist.",
+	setHeadingRules: "Folder rules",
+	setNaming: "Naming rules",
+	setNamingDesc: "One rule per line: folder | regular expression. The expression is tested against the file name with its extension. End the folder with /** to include subfolders. Use / for the vault root.",
+	setPlacement: "Placement rules",
+	setPlacementDesc: "One rule per line: extensions | allowed folder | allowed folder. Example: pdf png | Attachments",
+	errLines: (lines: number[]) => `Lines without a | separator or with an empty side: ${lines.join(", ")}`,
+	setHeadingAuto: "Automatic rescan",
+	setAuto: "Rescan automatically",
+	setAutoDesc: "Rescan after Obsidian updates its link index.",
+	setDelay: "Delay in milliseconds",
+	setDelayDesc: "Wait this long after the last change before rescanning.",
+	setHeadingIgnored: "Ignored items",
+	setClear: "Clear ignored items",
+	setClearDesc: (n: number, stale: number) => `${n} ignored items. ${stale} of them match nothing now.`,
+	confirmClear: (n: number) => `Clear all ${n} ignored items? They will be listed again.`,
+	btnClear: "Clear",
+};
+
+export type Strings = typeof EN;
+
+const JA: Strings = {
+	checkName: {
+		"broken-link": "リンク切れ", orphan: "孤立ノート", "duplicate-name": "重複ファイル名",
+		naming: "命名規則違反", residue: "残骸", placement: "置き場所規則違反",
+	},
+	cmdOpen: "健康診断のパネルを開く",
+	cmdRescan: "vault を走査し直す",
+	cmdCopy: "健康診断のレポートをコピー",
+
+	panelTitle: "vault の健康診断",
+	btnRescan: "走査し直す",
+	btnCopy: "レポートをコピー",
+	btnIgnore: "無視",
+	notScanned: "まだ走査していません。",
+	lastScan: (time, ms) => `最終走査: ${time}(${ms} ms)`,
+	meta: (scanned, excluded, ignored) => `走査 ${scanned} ファイル / 除外 ${excluded} / 無視 ${ignored}`,
+	indexing: "Obsidian がリンクの索引を作っている途中の可能性があります。終わったら走査し直します。",
+	none: "なし",
+	absoluteLinks: "絶対パスのリンク(ほかの端末では切れる)",
+	subpathLinks: "見出し・ブロックが無い(警告)",
+	invalidRule: (rule, message) => `無効な規則: ${rule}(${message})`,
+	failedChecks: "落ちた検査",
+	lineNo: (n) => `${n} 行目`,
+	property: (p) => `プロパティ ${p}`,
+	emptyNote: "0 バイトのノート",
+	groups: (n) => `${n} 組`,
+	vaultRoot: "(vault 直下)",
+
+	noticeCopied: "健康診断のレポートをコピーしました。",
+	noticeCopyFailed: (m) => `レポートをコピーできません: ${m}`,
+	noticeSchema: "Vault Doctor: data.json の形が違うので既定の設定で動いています(data.json は書き換えていません)。",
+	noticeBroken: "Vault Doctor: data.json を読めないので既定の設定で動いています(data.json は書き換えていません)。",
+	noticeNotSaved: "Vault Doctor: data.json を読めなかったので、設定を保存しません。",
+	noticeMissing: (p) => `ファイルがありません: ${p}`,
+
+	reportTitle: "vault 健康診断レポート",
+	reportCheck: "検査",
+	reportCount: "件数",
+	reportCols: {
+		"broken-link": ["参照元", "行", "リンク"], orphan: ["パス"], "duplicate-name": ["名前", "件数", "パス一覧"],
+		naming: ["パス", "規則"], residue: ["パス", "理由"], placement: ["パス", "規則"],
+	},
+
+	setExclude: "除外フォルダ",
+	setExcludeDesc: "1行に1つ、vault からの相対パス。全部の検査に効きます。Foo は Foo/ の配下だけで、FooBar/ には効きません。",
+	setExempt: "孤立ノートにしないフォルダ",
+	setExemptDesc: "1行に1つ。この配下のノートは孤立ノートに出しません。",
+	setDupAllowed: "重複を許す名前",
+	setDupAllowedDesc: "1行に1つのパターン。* は何文字でも、? は1文字。例: ????-??-??.md",
+	setResidue: "残骸のパターン",
+	setResidueDesc: "1行に1つ。ファイル名に当て、大文字小文字は区別しません。使えるのは * と ? だけ。",
+	setEmptyNote: "空のノートを残骸に出す",
+	setEmptyNoteDesc: "0 バイトの md。本文は開かないので、プロパティだけのノートは空と見なしません。",
+	setSubpaths: "見出しとブロックも調べる",
+	setSubpathsDesc: "リンク先の見出し・ブロックが無いときに警告を出します。",
+	setHeadingRules: "フォルダの規約",
+	setNaming: "命名規則",
+	setNamingDesc: "1行に1つ: フォルダ | 正規表現。正規表現は拡張子込みのファイル名に当てます。フォルダの末尾を /** にすると配下のフォルダも含みます。vault 直下は /。",
+	setPlacement: "置き場所規則",
+	setPlacementDesc: "1行に1つ: 拡張子 | 置いてよいフォルダ | 置いてよいフォルダ。例: pdf png | 添付",
+	errLines: (lines) => `| が無いか、片側が空の行: ${lines.join(", ")} 行目`,
+	setHeadingAuto: "自動の走査し直し",
+	setAuto: "自動で走査し直す",
+	setAutoDesc: "Obsidian がリンクの索引を更新したら走査し直します。",
+	setDelay: "待ち時間(ミリ秒)",
+	setDelayDesc: "最後の変更からこれだけ待ってから走査し直します。",
+	setHeadingIgnored: "無視した項目",
+	setClear: "無視をすべて解除",
+	setClearDesc: (n, stale) => `無視 ${n} 件。うち ${stale} 件は今どの項目にも当たっていません。`,
+	confirmClear: (n) => `無視した ${n} 件をすべて解除しますか? 一覧にまた出ます。`,
+	btnClear: "解除",
+};
+
+export let S: Strings = EN;
+
+/** Obsidian の表示言語(getLanguage の値)に合わせる。日本語以外は英語(FR-16) */
+export function useLanguage(lang: string): void {
+	S = lang === "ja" ? JA : EN;
+}

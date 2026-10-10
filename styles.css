@@ -1,0 +1,20 @@
+/* Vault Doctor: 右サイドバーのパネル(FR-11)。色は Obsidian のテーマの変数だけを使う */
+.vd-panel { padding: var(--size-4-2); }
+.vd-bar { display: flex; gap: var(--size-4-2); margin-bottom: var(--size-4-2); flex-wrap: wrap; }
+.vd-meta { color: var(--text-muted); font-size: var(--font-ui-smaller); }
+.vd-note { color: var(--text-warning); font-size: var(--font-ui-small); margin: var(--size-4-2) 0; }
+.vd-section { margin-top: var(--size-4-2); }
+.vd-section > summary { display: flex; align-items: center; gap: 6px; padding: 4px 2px; cursor: pointer; font-weight: var(--font-semibold); }
+.vd-count { margin-inline-start: auto; color: var(--text-muted); font-weight: normal; font-size: var(--font-ui-smaller); }
+.vd-count.vd-count-hit { color: var(--text-normal); }
+.vd-sub, .vd-group { display: flex; align-items: center; gap: 6px; margin: var(--size-4-2) 0 2px; padding-inline-start: 12px; color: var(--text-muted); font-size: var(--font-ui-smaller); font-weight: var(--font-semibold); }
+.vd-group-name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.vd-item { display: flex; align-items: center; gap: 6px; padding: 3px 4px 3px 20px; border-radius: var(--radius-s); cursor: pointer; font-size: var(--font-ui-small); }
+.vd-item:hover { background-color: var(--background-modifier-hover); }
+.vd-item-text { flex: 1; min-width: 0; }
+.vd-item-main { overflow-wrap: anywhere; }
+.vd-item-sub { color: var(--text-muted); font-size: var(--font-ui-smaller); overflow-wrap: anywhere; }
+.vd-ignore { flex: none; font-size: var(--font-ui-smaller); }
+.vd-invalid { color: var(--text-error); font-size: var(--font-ui-smaller); padding-inline-start: 12px; overflow-wrap: anywhere; }
+.vd-failed { margin-top: var(--size-4-4); }
+.vd-failed-title { font-weight: var(--font-semibold); color: var(--text-error); }

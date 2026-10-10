@@ -1,0 +1,10 @@
+{
+	"id": "vault-doctor",
+	"name": "Vault Doctor",
+	"version": "0.1.0",
+	"minAppVersion": "1.14.4",
+	"description": "Find broken links, orphan notes, and files that break your own folder naming and placement rules. Read-only.",
+	"author": "takosasi-dev",
+	"authorUrl": "https://github.com/takosasi-dev",
+	"isDesktopOnly": false
+}
